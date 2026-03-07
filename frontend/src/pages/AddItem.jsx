@@ -9,33 +9,31 @@ import { setMyShopData } from "../redux/ownerSlice";
 import { ClipLoader } from "react-spinners";
 
 const AddItem = () => {
-
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const { myShopData } = useSelector((state) => state.owner);
 
   const [Name, setName] = useState("");
   const [price, setPrice] = useState(0);
-  const [category, setCategory] = useState("")
-  const [foodType, setFoodType] = useState("veg")
+  const [category, setCategory] = useState("");
+  const [foodType, setFoodType] = useState("veg");
   const [frontendImg, setFrontendImg] = useState(null);
   const [backendImg, setBackendImg] = useState(null);
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
 
-  const categories =[
-        "Snacks",
-        "Main Course",
-        "Desserets",
-        "Pizza",
-        "Burgurs",
-        "Sandwiches",
-        "South Indian",
-        "North Indian",
-        "Chinese",
-        "Fast Food",
-        "Other"
-      ]
-
+  const categories = [
+    "Snacks",
+    "Main Course",
+    "Desserts",
+    "Pizza",
+    "Burgers",
+    "Sandwiches",
+    "South Indian",
+    "North Indian",
+    "Chinese",
+    "Fast Food",
+    "Other",
+  ];
 
   const handleImg = (e) => {
     const file = e.target.files[0];
@@ -43,29 +41,31 @@ const AddItem = () => {
     setFrontendImg(URL.createObjectURL(file));
   };
 
-
-  const handleSubmit = async(e) =>{
-    e.preventDefault()
-    setLoading(true)
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
     try {
-      const formData = new FormData()
-      formData.append("name",Name)
-      formData.append("category",category)
-      formData.append("foodType",foodType)
-      formData.append("price",price)
+      const formData = new FormData();
+      formData.append("name", Name);
+      formData.append("category", category);
+      formData.append("foodType", foodType);
+      formData.append("price", price);
 
-      if(backendImg){
-        formData.append("image",backendImg)
+      if (backendImg) {
+        formData.append("image", backendImg);
       }
-      const result = await axios.post(`${serverUrl}/api/item/add-item`, formData)
-      dispatch(setMyShopData(result.data))
-      setLoading(false)
-      navigate('/')
+      const result = await axios.post(
+        `${serverUrl}/api/item/add-item`,
+        formData,
+      );
+      dispatch(setMyShopData(result.data));
+      setLoading(false);
+      navigate("/");
     } catch (error) {
-      console.log(error)
-      setLoading(false)
+      console.log(error);
+      setLoading(false);
     }
-  }
+  };
 
   return (
     <div className="flex justify-center flex-col items-center p-6 bg-gradient-to-br from-orange-50 relative to-white min-h-screen">
@@ -78,7 +78,6 @@ const AddItem = () => {
       </div>
 
       <div className="max-w-lg w-full bg-white shadow-xl rounded-2xl p-8 border border-orange-100">
-
         {/* add shop text and Icon */}
         <div className="flex flex-col items-center mb-6">
           <div className="bg-orange-100 p-4 rounded-full mb-4">
@@ -125,7 +124,7 @@ const AddItem = () => {
               </div>
             )}
           </div>
-          
+
           {/* Price */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -152,9 +151,10 @@ const AddItem = () => {
             >
               <option value="">Select Category</option>
               {categories.map((cate, index) => (
-                <option value={cate} key={index}>{cate}</option>
+                <option value={cate} key={index}>
+                  {cate}
+                </option>
               ))}
-
             </select>
           </div>
 
@@ -174,10 +174,12 @@ const AddItem = () => {
           </div>
 
           {/* Save Btn */}
-          <button className="w-full bg-[#ff4d2d] text-white px-6 py-3 rounded-lg font-semibold shadow-md hover:bg-orange-600 hover:shadow-lg transition-all duration-200 cursor-pointer" disabled={loading}>
-            {loading?<ClipLoader size={20} color="white"/>:"Save"}
+          <button
+            className="w-full bg-[#ff4d2d] text-white px-6 py-3 rounded-lg font-semibold shadow-md hover:bg-orange-600 hover:shadow-lg transition-all duration-200 cursor-pointer"
+            disabled={loading}
+          >
+            {loading ? <ClipLoader size={20} color="white" /> : "Save"}
           </button>
-
         </form>
       </div>
     </div>
