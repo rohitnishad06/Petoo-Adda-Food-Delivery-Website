@@ -20,9 +20,9 @@ const itemSchema = new mongoose.Schema(
       enum: [
         "Snacks",
         "Main Course",
-        "Desserets",
+        "Desserts",
         "Pizza",
-        "Burgurs",
+        "Burgers",
         "Sandwiches",
         "South Indian",
         "North Indian",
@@ -32,25 +32,24 @@ const itemSchema = new mongoose.Schema(
       ],
       required: true,
     },
-    price:{
-      type:Number,
-      required:true,
-      min:0
+    price: {
+      type: Number,
+      required: true,
+      min: 0,
     },
-    foodType:{
-      type:String,
-      required:true,
-      enum:["veg","non-veg"]
+    foodType: {
+      type: String,
+      required: true,
+      enum: ["veg", "non-veg"],
     },
-    rating:{
-      average:{type:Number, default:0},
-      count:{type:Number, default:0},
-
-    }
+    rating: {
+      average: { type: Number, default: 0 },
+      count: { type: Number, default: 0 },
+    },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
-const itemModel = mongoose.model("Items",itemSchema);
+const itemModel = mongoose.model("Items", itemSchema);
 
 export default itemModel;
