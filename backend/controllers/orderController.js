@@ -140,17 +140,7 @@ export const placeOrder = async (req, res) => {
 
     return res.status(201).json(newOrder);
   } catch (error) {
-    console.error("========== PLACE ORDER ERROR ==========");
-  console.error("Error:", error);
-  console.error("Message:", error?.message);
-  console.error("Response:", error?.response?.data);
-  console.error("Stack:", error?.stack);
-  console.error("========================================");
-
-  return res.status(500).json({
-    message: "Place order failed",
-    error: error?.message || error?.response?.data || error,
-  });
+    return res.status(500).json({ message: `place Order Error ${error}` });
   }
 };
 
@@ -625,51 +615,55 @@ export const verifyDeliveryOtp = async (req, res) => {
   }
 };
 
-export const getTodayDeliveries = async(req, res) =>{
+export const getTodayDeliveries = async (req, res) => {
   try {
-    const deliveryBoyId = req.userId
+    const deliveryBoyId = req.userId;
     const startOfDay = new Date();
-    startOfDay.setHours(0,0,0,0)
+    startOfDay.setHours(0, 0, 0, 0);
 
-    const orders = await orderModel.find({
-      "shopOrders.assignedDeliveryBoy":deliveryBoyId,
-      "shopOrders.status":"delivered",
-      "shopOrders.deliveredAt":{$gte:startOfDay}
-    }).lean();
+    const orders = await orderModel
+      .find({
+        "shopOrders.assignedDeliveryBoy": deliveryBoyId,
+        "shopOrders.status": "delivered",
+        "shopOrders.deliveredAt": { $gte: startOfDay },
+      })
+      .lean();
 
     let todaysDeliveries = [];
 
-    orders.forEach(order => {
-      order.shopOrders.forEach(shopOrder => {
-        if(shopOrder.assignedDeliveryBoy == deliveryBoyId 
-          && shopOrder.status == "delivered"
-          && shopOrder.deliveredAt
-          && shopOrder.deliveredAt >= startOfDay
-        ){
-          todaysDeliveries.push(shopOrder)
+    orders.forEach((order) => {
+      order.shopOrders.forEach((shopOrder) => {
+        if (
+          shopOrder.assignedDeliveryBoy == deliveryBoyId &&
+          shopOrder.status == "delivered" &&
+          shopOrder.deliveredAt &&
+          shopOrder.deliveredAt >= startOfDay
+        ) {
+          todaysDeliveries.push(shopOrder);
         }
-      })
-    })
+      });
+    });
 
-    let stats = {}
+    let stats = {};
 
-    todaysDeliveries.forEach(shopOrder => {
-      const hour = new Date(shopOrder.deliveredAt).getHours()
-      stats[hour] = (stats[hour] || 0 ) + 1
-    })
+    todaysDeliveries.forEach((shopOrder) => {
+      const hour = new Date(shopOrder.deliveredAt).getHours();
+      stats[hour] = (stats[hour] || 0) + 1;
+    });
     // hour:count
     // 10 : 2
 
-    let formattedStats = Object.keys(stats).map(hour =>({
+    let formattedStats = Object.keys(stats).map((hour) => ({
       hour: parseInt(hour),
-      count: stats[hour]
-    }))
+      count: stats[hour],
+    }));
 
-    formattedStats.sort((a,b) => a.hour-b.hour)
+    formattedStats.sort((a, b) => a.hour - b.hour);
 
     return res.status(200).json(formattedStats);
-
   } catch (error) {
-    return res.status(500).json({ message: `GET Today Deliveris Error ${error}` });
+    return res
+      .status(500)
+      .json({ message: `GET Today Deliveris Error ${error}` });
   }
-}
+};
