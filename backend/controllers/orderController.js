@@ -140,7 +140,17 @@ export const placeOrder = async (req, res) => {
 
     return res.status(201).json(newOrder);
   } catch (error) {
-    return res.status(500).json({ message: `place order Error ${error}` });
+    console.error("========== PLACE ORDER ERROR ==========");
+  console.error("Error:", error);
+  console.error("Message:", error?.message);
+  console.error("Response:", error?.response?.data);
+  console.error("Stack:", error?.stack);
+  console.error("========================================");
+
+  return res.status(500).json({
+    message: "Place order failed",
+    error: error?.message || error?.response?.data || error,
+  });
   }
 };
 

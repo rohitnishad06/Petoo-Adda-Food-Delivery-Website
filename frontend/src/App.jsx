@@ -27,7 +27,7 @@ import { io } from "socket.io-client";
 import axios from "axios";
 import CompleteProfile from "./components/CompleteProfile";
 
-export const serverUrl = "https://petoo-adda-backend.onrender.com";
+export const serverUrl = import.meta.env.VITE_BACKEND_URL;
 const App = () => {
 
   useGetCurrentUser();
